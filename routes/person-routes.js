@@ -2,36 +2,19 @@
 // Person routes
 //
 
-app.get('/api/person', (req, res, next) => {
-	console.log('get was called')
+const express = require('express')
+const Person = require('../domain/Person')
+const PersonController = require('../controllers/person-controller')
+const routes = express.Router()
+let personlist = []
 
-	res.status(200).json(personlist).end()
-})
 
-app.get('/api/person/:id', (req, res, next) => {
-	console.log('get was called')
-	const id = req.params.id
+routes.get('/person', PersonController.getAllPerson)
 
-	if(id >= 0 && id < personlist.length){
-		// als id geldig is in de personlist: stuur person terug
-		res.status(200).json(personlist[id]).end()
-	} else {
-		// als id niet geldig is: error
-		const error = {
-			error: 'ID does not exist (index out of bounds)'
-		}
-		next(error)
-	}
-})
+routes.get('/person/:id', PersonController.getPersonByID)
 
-app.post('/api/person', (req, res, next) => {
-	console.log('post was called')
-	console.log(req.body)
+routes.post('/person', PersonController.createPerson)
 
-	const firstname = req.body.firstname
-	const lastname = req.body.lastname
-	const person = new Person(firstname, lastname)
-	personlist.push(person)
+routes.delete('/person/:id', PersonController.deletePersonByID)
 
-	res.status(200).json(person).end()
-})
+module.exports = routes
